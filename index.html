@@ -22,7 +22,7 @@
       <div class="container">
         <div class="row">
           <div class="col">
-            <form class="col p-4 bg-info rounded mt-4">
+            <form class="search-form col p-4 bg-info rounded mt-4">
               <div class="input-group d-flex justify-content-center">
                 <div class="form-floating w-75">
                   <input
@@ -30,12 +30,13 @@
                     class="form-control"
                     id="floatingInput"
                     placeholder="Brave"
+                    autofocus
                   />
                   <label for="floatingInput">Enter a Word</label>
                 </div>
                 <button
                   class="btn btn-success"
-                  type="button"
+                  type="submit"
                   id="button-addon2"
                 >
                   Search
@@ -69,43 +70,18 @@
                 </div>
                 <div class="query-word-wrapper">
                   <h3 class="query-word text-success">Hello</h3>
-                  <h6 class="phonetics">phonetics</h6>
+                  <h6 class="phonetic">phonetics</h6>
                 </div>
               </div>
 
               <!-- Parts of speech of specified word -->
-              <div class="mt-4">
-                <div class="part-of-speech mb-4">
-                  <h6>Noun</h6>
-                  <ol>
-                    <li>
-                      <h6 class="definaiton">Hello</h6>
-                      <p class="example">First of word of dictionary</p>
-                    </li>
-                  </ol>
-                </div>
-
-                <div class="part-of-speech mb-4">
-                  <h6>Noun</h6>
-                  <ol>
-                    <li>
-                      <h6 class="definaiton">Hello</h6>
-                      <p class="example">First of word of dictionary</p>
-                    </li>
-                  </ol>
-                </div>
-              </div>
+              <div class="mt-4 word-meanings"></div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Bootstrap -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-      crossorigin="anonymous"
-    ></script>
+    <script src="js/index.js"></script>
   </body>
 </html>
