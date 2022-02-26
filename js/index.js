@@ -1,58 +1,4 @@
 // data
-const data = [
-  {
-    word: "dictionary",
-    phonetic: "/ˈdɪkʃəˌnɛɹi/",
-    phonetics: [
-      { text: "/ˈdɪkʃəˌnɛɹi/", audio: "" },
-      {
-        text: "/ˈdɪkʃ(ə)n(ə)ɹi/",
-        audio:
-          "https://api.dictionaryapi.dev/media/pronunciations/en/dictionary-uk.mp3",
-        sourceUrl: "https://commons.wikimedia.org/w/index.php?curid=503422",
-      },
-      { text: "/ˈdɪkʃəˌnɛɹi/", audio: "" },
-    ],
-    meanings: [
-      {
-        partOfSpeech: "noun",
-        definitions: [
-          {
-            definition:
-              "A reference work with a list of words from one or more languages, normally ordered alphabetically, explaining each word's meaning, and sometimes containing information on its etymology, pronunciation, usage, translations, and other data.",
-            synonyms: ["wordbook"],
-          },
-          {
-            definition:
-              "(preceded by the) A synchronic dictionary of a standardised language held to only contain words that are properly part of the language.",
-          },
-          {
-            definition:
-              "(by extension) Any work that has a list of material organized alphabetically; e.g., biographical dictionary, encyclopedic dictionary.",
-          },
-          {
-            definition:
-              "An associative array, a data structure where each value is referenced by a particular key, analogous to words and definitions in a physical dictionary.",
-          },
-        ],
-      },
-      {
-        partOfSpeech: "verb",
-        definitions: [
-          { definition: "To look up in a dictionary." },
-          { definition: "To add to a dictionary." },
-          { definition: "To compile a dictionary." },
-        ],
-      },
-    ],
-    license: {
-      name: "CC BY-SA 3.0",
-      url: "https://creativecommons.org/licenses/by-sa/3.0",
-    },
-    sourceUrls: ["https://en.wiktionary.org/wiki/dictionary"],
-  },
-];
-
 const dataFormat2 = [
   {
     word: "like",
@@ -294,6 +240,7 @@ const searchWord = async (word) => {
     const data = await res.json();
 
     // display search result
+    console.log("format meaning", formatMeanings(data));
     displaySearchWord(
       data[0]["word"],
       data[0]["phonetic"],
@@ -311,10 +258,13 @@ function displaySearchWord(word, phonetic, meanings) {
   setDOMValue(".query-word-wrapper > .phonetic", phonetic);
 
   // 2. display meanings
+  const containerDiv = document.createElement("div");
+  containerDiv.classList.add("word-meanings");
+
   for (let meaning in meanings) {
     // part of speech wrapper
     const div = document.createElement("div");
-    div.classList.add(["mb-4", "part-of-speech"]);
+    div.classList.add("mb-4", "part-of-speech");
 
     // part of speech
     const h6 = document.createElement("h6");
@@ -325,56 +275,43 @@ function displaySearchWord(word, phonetic, meanings) {
     // Ordered list for showing meaning
     const ol = document.createElement("ol");
 
-    meanings[meaning].forEach((def) => {
+    meanings[meaning].forEach((item) => {
       // list item for each definition
       const listItem = document.createElement("li");
       listItem.classList.add("mb-3");
 
       // definition
       const term = document.createElement("h6");
-      term.innerText = def.definition;
+      term.innerText = item.definition;
 
       listItem.appendChild(term);
 
       // example
-      if (def.example) {
-        const example = document.createElement("small");
-        example.innerHTML = "<b>Example: </b>" + def.example;
-
-        listItem.appendChild(example);
-      }
+      showMetaInfo("Example", item.example, listItem);
 
       // synonyms
-      if (def.synonyms) {
-        const synonyms = document.createElement("small");
-        synonyms.innerHTML = "<b>Synonyms: </b>" + def.synonyms;
-
-        listItem.appendChild(synonyms);
-      }
+      showMetaInfo("Synonyms", item.synonyms, listItem);
 
       // antonyms
-      if (def.antonyms) {
-        const antonyms = document.createElement("small");
-        antonyms.innerHTML = "<b>Antonyms: </b>" + def.antonyms;
-
-        listItem.appendChild(antonyms);
-      }
-
-      // adding list item meaning list
+      showMetaInfo("Antonyms", item.antonyms, listItem);
       ol.appendChild(listItem);
     });
 
     // adding meanings to wrapper div
     div.appendChild(ol);
 
-    // displaying word meanings
-    document.querySelector(".word-meanings").appendChild(div);
+    // adding all parts of speech in container div
+    containerDiv.appendChild(div);
   }
+
+  // displaying new word meaning replacing previous one
+  document
+    .querySelector(".word-meanings-wrapper")
+    .replaceChild(containerDiv, document.querySelector(".word-meanings"));
 }
 
 // format meaning data
 function formatMeanings(data) {
-  // console.log("format meaning", data);
   const reducedArr = data
     .reduce((result, current) => [...result, ...current.meanings], [])
     .reduce((result, current) => {
@@ -391,6 +328,15 @@ function formatMeanings(data) {
     }, {});
 
   return reducedArr;
+}
+
+// show meta info
+function showMetaInfo(term, info, appendTo, tag = "small") {
+  if (info) {
+    const element = document.createElement(tag);
+    element.innerHTML = ` <b>${term}: </b>` + info;
+    appendTo.appendChild(element);
+  }
 }
 
 // Get DOM value
