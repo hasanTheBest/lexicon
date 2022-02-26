@@ -224,9 +224,22 @@ document
 function handleFormSubmit(e) {
   e.preventDefault();
 
+  // display loading
+  document.querySelector(".loading-spinner").classList.remove("d-none");
+
   const wordToSearch = getDOMValue(".search-form input", "value").trim();
 
   searchWord(wordToSearch);
+
+  // setTimeout(displayThing, 3000);
+
+  // function displayThing() {
+  //   displaySearchWord(
+  //     dataFormat2[0]["word"],
+  //     dataFormat2[0]["phonetic"],
+  //     formatMeanings(dataFormat2)
+  //   );
+  // }
 
   setDOMValue(".search-form input", "", "value");
 }
@@ -240,14 +253,22 @@ const searchWord = async (word) => {
     const data = await res.json();
 
     // display search result
-    console.log("format meaning", formatMeanings(data));
     displaySearchWord(
       data[0]["word"],
       data[0]["phonetic"],
       formatMeanings(data)
     );
   } catch (err) {
-    console.log(err);
+    const errorNode = document.createElement("div");
+    errorNode.classList.add("word-meanings");
+    errorNode.innerHTML = `<p class="h1 text-danger">${err}</p>`;
+
+    document
+      .querySelector(".word-meanings-wrapper")
+      .replaceChild(errorNode, document.querySelector(".word-meanings"));
+
+    // removing loading spinner
+    document.querySelector(".loading-spinner").classList.add("d-none");
   }
 };
 
@@ -302,6 +323,9 @@ function displaySearchWord(word, phonetic, meanings) {
 
     // adding all parts of speech in container div
     containerDiv.appendChild(div);
+
+    // removing loading spinner
+    document.querySelector(".loading-spinner").classList.add("d-none");
   }
 
   // displaying new word meaning replacing previous one

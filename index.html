@@ -15,6 +15,8 @@
       integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
       crossorigin="anonymous"
     />
+
+    <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
     <!-- Search Section -->
@@ -46,6 +48,29 @@
 
             <!-- Display Search Item -->
             <div class="display-search-item p-3 w-75 mx-auto">
+              <!-- loading effect -->
+              <div class="loading-spinner d-none">
+                <div
+                  class="spinner-border text-danger"
+                  role="status"
+                  style="width: 5rem; height: 5rem"
+                >
+                  <span class="visually-hidden">Loading... </span>
+                </div>
+                <div
+                  class="spinner-border text-info"
+                  style="width: 4rem; height: 4rem"
+                ></div>
+                <div
+                  class="spinner-border text-warning"
+                  style="width: 3rem; height: 3rem"
+                ></div>
+                <div
+                  class="spinner-grow text-success"
+                  style="width: 2rem; height: 2rem"
+                ></div>
+              </div>
+
               <div class="d-flex">
                 <div class="hear-icon-wrapper p-3 mr-3">
                   <!-- listening icon -->
@@ -54,7 +79,7 @@
                     width="48"
                     height="48"
                     fill="currentColor"
-                    class="bi bi-volume-up-fill"
+                    class="bi bi-volume-up-fill hear-icon"
                     viewBox="0 0 16 16"
                   >
                     <path
@@ -69,8 +94,8 @@
                   </svg>
                 </div>
                 <div class="query-word-wrapper">
-                  <h3 class="query-word text-success">Hello</h3>
-                  <h6 class="phonetic">phonetics</h6>
+                  <h3 class="query-word text-success"></h3>
+                  <h6 class="phonetic"></h6>
                 </div>
               </div>
 
