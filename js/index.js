@@ -277,14 +277,14 @@ const searchWord = async (word) => {
 function displaySearchWord(word, phonetics, meanings) {
   // 1. display query word
   setDOMValue(".query-word-wrapper > .query-word", word);
-  setDOMValue(".listen-word", phonetics.map(({ audio }) => audio)[0], "src");
+  setDOMValue(
+    ".listen-word",
+    phonetics.filter(({ audio }) => audio)[0]["audio"],
+    "src"
+  );
   setDOMValue(
     ".query-word-wrapper > .phonetic",
-    phonetics.map(({ audio, text }) => {
-      if (audio) {
-        return text;
-      }
-    })[0]
+    phonetics.filter(({ audio }) => audio)[0]["text"]
   );
 
   // 2. listen pronunciation
