@@ -3,6 +3,10 @@
   height: 100%;
 }
 
+.hear-icon {
+  cursor: pointer;
+}
+
 .loading-spinner {
   position: absolute;
   top: 0;

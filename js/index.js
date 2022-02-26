@@ -226,6 +226,7 @@ function handleFormSubmit(e) {
 
   // display loading
   document.querySelector(".loading-spinner").classList.remove("d-none");
+  // document.querySelector(".hear-icon").classList.add("d-none");
 
   const wordToSearch = getDOMValue(".search-form input", "value").trim();
 
@@ -236,7 +237,7 @@ function handleFormSubmit(e) {
   // function displayThing() {
   //   displaySearchWord(
   //     dataFormat2[0]["word"],
-  //     dataFormat2[0]["phonetic"],
+  //     dataFormat2[0]["phonetics"],
   //     formatMeanings(dataFormat2)
   //   );
   // }
@@ -255,7 +256,7 @@ const searchWord = async (word) => {
     // display search result
     displaySearchWord(
       data[0]["word"],
-      data[0]["phonetic"],
+      data[0]["phonetics"],
       formatMeanings(data)
     );
   } catch (err) {
@@ -273,12 +274,24 @@ const searchWord = async (word) => {
 };
 
 // display word
-function displaySearchWord(word, phonetic, meanings) {
+function displaySearchWord(word, phonetics, meanings) {
   // 1. display query word
   setDOMValue(".query-word-wrapper > .query-word", word);
-  setDOMValue(".query-word-wrapper > .phonetic", phonetic);
+  setDOMValue(".listen-word", phonetics.map(({ audio }) => audio)[0], "src");
+  setDOMValue(
+    ".query-word-wrapper > .phonetic",
+    phonetics.map(({ audio, text }) => {
+      if (audio) {
+        return text;
+      }
+    })[0]
+  );
 
-  // 2. display meanings
+  // 2. listen pronunciation
+  document.querySelector(".hear-icon").classList.remove("d-none");
+  pronunciation();
+
+  // 3. display meanings
   const containerDiv = document.createElement("div");
   containerDiv.classList.add("word-meanings");
 
@@ -334,6 +347,22 @@ function displaySearchWord(word, phonetic, meanings) {
     .replaceChild(containerDiv, document.querySelector(".word-meanings"));
 }
 
+// Listen pronunciation
+function pronunciation(data) {
+  document.querySelector(".hear-icon").addEventListener("click", () => {
+    document.querySelector(".listen-word").play();
+  });
+}
+
+// show meta info
+function showMetaInfo(term, info, appendTo, tag = "small") {
+  if (info) {
+    const element = document.createElement(tag);
+    element.innerHTML = ` <b>${term}: </b>` + info;
+    appendTo.appendChild(element);
+  }
+}
+
 // format meaning data
 function formatMeanings(data) {
   const reducedArr = data
@@ -352,15 +381,6 @@ function formatMeanings(data) {
     }, {});
 
   return reducedArr;
-}
-
-// show meta info
-function showMetaInfo(term, info, appendTo, tag = "small") {
-  if (info) {
-    const element = document.createElement(tag);
-    element.innerHTML = ` <b>${term}: </b>` + info;
-    appendTo.appendChild(element);
-  }
 }
 
 // Get DOM value
