@@ -227,16 +227,17 @@ function handleFormSubmit(e) {
 
   const wordToSearch = getDOMValue(".search-form input", "value").trim();
 
-  searchWord(wordToSearch);
+  // searchWord(wordToSearch);
 
-  // setTimeout(displayThing, 2000);
-  // function displayThing() {
-  //   displaySearchWord(
-  //     dataFormat2[0]["word"],
-  //     dataFormat2[0]["phonetics"],
-  //     formatMeanings(dataFormat2)
-  //   );
-  // }
+  setTimeout(displayThing, 2000);
+  select(".loading-spinner").classList.remove("d-none");
+  function displayThing() {
+    displaySearchWord(
+      dataFormat2[0]["word"],
+      dataFormat2[0]["phonetics"],
+      formatMeanings(dataFormat2)
+    );
+  }
 
   setDOMValue(".search-form input", "", "value");
 }
@@ -308,7 +309,7 @@ function displaySearchWord(word, phonetics, meanings) {
 
     // part of speech
     const h6 = create("h6");
-    h6.innerText = meaning;
+    h6.innerText = meaning.toUpperCase();
 
     div.appendChild(h6);
 
@@ -329,23 +330,26 @@ function displaySearchWord(word, phonetics, meanings) {
       // example
       if (item.example) showMetaInfo("Example", item.example, listItem);
 
+      console.log(item?.synonyms);
+
       // synonyms
-      if (item.synonyms.length) {
-        const synLink = item.synonyms.map(
+      if (item.hasOwnProperty("synonyms")) {
+        const synonyms = item.synonyms.map(
           (word) =>
-            `<button type="button" class="btn btn-link" onclick='searchWord("${word}")'>${word}<button>`
+            `<button type="button" class="btn btn-link p-0" onclick='searchWord("${word}")'>${word}</button>`
         );
-        console.log(synLink);
-        showMetaInfo("Synonyms", synLink.join(""), listItem);
+        synonyms.length > 0 &&
+          showMetaInfo("Synonyms", synonyms.join(" "), listItem);
       }
 
       // antonyms
-      if (item.antonyms.length) {
-        const antoLink = item.antonyms.map(
+      if (item.hasOwnProperty("antonyms")) {
+        const antonyms = item.antonyms.map(
           (word) =>
-            `<button type="button" class="btn btn-link" onclick='searchWord("${word}")'>${word}<button>`
+            `<button type="button" class="btn btn-link p-0" onclick='searchWord("${word}")'>${word}</button>`
         );
-        showMetaInfo("Antonyms", antoLink.join(""), listItem);
+        antonyms.length > 0 &&
+          showMetaInfo("Antonyms", antonyms.join(" "), listItem);
       }
 
       // list item added to ordered list
