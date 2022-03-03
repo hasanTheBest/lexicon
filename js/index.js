@@ -223,8 +223,6 @@ select(".search-form").addEventListener("submit", handleFormSubmit);
 function handleFormSubmit(e) {
   e.preventDefault();
 
-  // display loading
-  select(".loading-spinner").classList.remove("d-none");
   // select(".hear-icon").classList.add("d-none");
 
   const wordToSearch = getDOMValue(".search-form input", "value").trim();
@@ -245,6 +243,9 @@ function handleFormSubmit(e) {
 
 // search word
 const searchWord = async (word) => {
+  // display loading
+  select(".loading-spinner").classList.remove("d-none");
+
   try {
     const res = await fetch(
       `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
@@ -280,14 +281,14 @@ function displaySearchWord(word, phonetics, meanings) {
   // set listen url
   setDOMValue(
     ".listen-word",
-    phonetics.filter(({ audio }) => audio)[0]["audio"],
+    phonetics?.filter(({ audio }) => audio)[0]["audio"],
     "src"
   );
 
   // set pronunciation text
   setDOMValue(
     ".query-word-wrapper > .phonetic",
-    phonetics.filter(({ audio }) => audio)[0]["text"]
+    phonetics?.filter(({ audio }) => audio)[0]["text"]
   );
 
   // show hear icon
@@ -326,13 +327,26 @@ function displaySearchWord(word, phonetics, meanings) {
       listItem.appendChild(term);
 
       // example
-      showMetaInfo("Example", item.example, listItem);
+      if (item.example) showMetaInfo("Example", item.example, listItem);
 
       // synonyms
-      showMetaInfo("Synonyms", item.synonyms, listItem);
+      if (item.synonyms.length) {
+        const synLink = item.synonyms.map(
+          (word) =>
+            `<button type="button" class="btn btn-link" onclick='searchWord("${word}")'>${word}<button>`
+        );
+        console.log(synLink);
+        showMetaInfo("Synonyms", synLink.join(""), listItem);
+      }
 
       // antonyms
-      showMetaInfo("Antonyms", item.antonyms, listItem);
+      if (item.antonyms.length) {
+        const antoLink = item.antonyms.map(
+          (word) =>
+            `<button type="button" class="btn btn-link" onclick='searchWord("${word}")'>${word}<button>`
+        );
+        showMetaInfo("Antonyms", antoLink.join(""), listItem);
+      }
 
       // list item added to ordered list
       ol.appendChild(listItem);
@@ -362,10 +376,10 @@ function pronunciation(data) {
 }
 
 // show meta info
-function showMetaInfo(term, info, appendTo, tag = "small") {
-  if (info) {
+function showMetaInfo(term, meta, appendTo, tag = "small") {
+  if (meta) {
     const element = create(tag);
-    element.innerHTML = ` <b>${term}: </b>` + info;
+    element.innerHTML = ` <b>${term}: </b>` + meta;
     appendTo.appendChild(element);
   }
 }
