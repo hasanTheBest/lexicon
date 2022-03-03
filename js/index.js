@@ -217,23 +217,21 @@ const dataFormat2 = [
 ];
 
 // Add event lister to the form submission
-document
-  .querySelector(".search-form")
-  .addEventListener("submit", handleFormSubmit);
+select(".search-form").addEventListener("submit", handleFormSubmit);
 
+// handle form submission
 function handleFormSubmit(e) {
   e.preventDefault();
 
   // display loading
-  document.querySelector(".loading-spinner").classList.remove("d-none");
-  // document.querySelector(".hear-icon").classList.add("d-none");
+  select(".loading-spinner").classList.remove("d-none");
+  // select(".hear-icon").classList.add("d-none");
 
   const wordToSearch = getDOMValue(".search-form input", "value").trim();
 
   searchWord(wordToSearch);
 
-  // setTimeout(displayThing, 3000);
-
+  // setTimeout(displayThing, 2000);
   // function displayThing() {
   //   displaySearchWord(
   //     dataFormat2[0]["word"],
@@ -260,62 +258,69 @@ const searchWord = async (word) => {
       formatMeanings(data)
     );
   } catch (err) {
-    const errorNode = document.createElement("div");
+    const errorNode = create("div");
     errorNode.classList.add("word-meanings");
-    errorNode.innerHTML = `<p class="h1 text-danger">${err}</p>`;
+    errorNode.innerHTML = `<p class="h1 text-danger">${err.message}</p>`;
 
-    document
-      .querySelector(".word-meanings-wrapper")
-      .replaceChild(errorNode, document.querySelector(".word-meanings"));
+    select(".word-meanings-wrapper").replaceChild(
+      errorNode,
+      select(".word-meanings")
+    );
 
     // removing loading spinner
-    document.querySelector(".loading-spinner").classList.add("d-none");
+    select(".loading-spinner").classList.add("d-none");
   }
 };
 
 // display word
 function displaySearchWord(word, phonetics, meanings) {
-  // 1. display query word
+  // display query word
   setDOMValue(".query-word-wrapper > .query-word", word);
+
+  // set listen url
   setDOMValue(
     ".listen-word",
     phonetics.filter(({ audio }) => audio)[0]["audio"],
     "src"
   );
+
+  // set pronunciation text
   setDOMValue(
     ".query-word-wrapper > .phonetic",
     phonetics.filter(({ audio }) => audio)[0]["text"]
   );
 
-  // 2. listen pronunciation
-  document.querySelector(".hear-icon").classList.remove("d-none");
+  // show hear icon
+  select(".hear-icon").classList.remove("d-none");
+
+  // listen pronunciation
   pronunciation();
 
-  // 3. display meanings
-  const containerDiv = document.createElement("div");
+  // display meanings
+  const containerDiv = create("div");
   containerDiv.classList.add("word-meanings");
 
   for (let meaning in meanings) {
     // part of speech wrapper
-    const div = document.createElement("div");
+    const div = create("div");
     div.classList.add("mb-4", "part-of-speech");
 
     // part of speech
-    const h6 = document.createElement("h6");
+    const h6 = create("h6");
     h6.innerText = meaning;
 
     div.appendChild(h6);
 
-    // Ordered list for showing meaning
-    const ol = document.createElement("ol");
+    // Ordered list for showing meaning/definition
+    const ol = create("ol");
 
     meanings[meaning].forEach((item) => {
       // list item for each definition
-      const listItem = document.createElement("li");
+      const listItem = create("li");
       listItem.classList.add("mb-3");
 
       // definition
-      const term = document.createElement("h6");
+      const term = create("h6");
       term.innerText = item.definition;
 
       listItem.appendChild(term);
@@ -328,6 +333,8 @@ function displaySearchWord(word, phonetics, meanings) {
 
       // antonyms
       showMetaInfo("Antonyms", item.antonyms, listItem);
+
+      // list item added to ordered list
       ol.appendChild(listItem);
     });
 
@@ -338,26 +345,26 @@ function displaySearchWord(word, phonetics, meanings) {
     containerDiv.appendChild(div);
 
     // removing loading spinner
-    document.querySelector(".loading-spinner").classList.add("d-none");
+    select(".loading-spinner").classList.add("d-none");
   }
 
   // displaying new word meaning replacing previous one
   document
     .querySelector(".word-meanings-wrapper")
-    .replaceChild(containerDiv, document.querySelector(".word-meanings"));
+    .replaceChild(containerDiv, select(".word-meanings"));
 }
 
 // Listen pronunciation
 function pronunciation(data) {
-  document.querySelector(".hear-icon").addEventListener("click", () => {
-    document.querySelector(".listen-word").play();
+  select(".hear-icon").addEventListener("click", () => {
+    select(".listen-word").play();
   });
 }
 
 // show meta info
 function showMetaInfo(term, info, appendTo, tag = "small") {
   if (info) {
-    const element = document.createElement(tag);
+    const element = create(tag);
     element.innerHTML = ` <b>${term}: </b>` + info;
     appendTo.appendChild(element);
   }
@@ -385,10 +392,20 @@ function formatMeanings(data) {
 
 // Get DOM value
 function getDOMValue(selector, method = "innerText") {
-  return document.querySelector(selector)[method];
+  return select(selector)[method];
 }
 
 // Set DOM value
 function setDOMValue(selector, content, method = "innerText") {
-  document.querySelector(selector)[method] = content;
+  select(selector)[method] = content;
+}
+
+// select dom
+function select(selector) {
+  return document.querySelector(selector);
+}
+
+// create dom
+function create(element) {
+  return document.createElement(element);
 }
