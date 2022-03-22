@@ -185,7 +185,7 @@ function formatMeanings(data) {
 }
 
 // Show Error Message
-function displayErrorMessage(msg) {
+function displayErrorMessage(message) {
   const errorNode = create("div");
   errorNode.classList.add("word-meanings");
   errorNode.innerHTML = `<p class="h1 text-danger">${message}</p>`;
