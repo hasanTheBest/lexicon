@@ -37,23 +37,17 @@ const searchWord = async (word) => {
     const data = await res.json();
 
     // display search result
-    displaySearchWord(
-      data[0]["word"],
-      data[0]["phonetics"],
-      formatMeanings(data)
-    );
+    Array.isArray(data)
+      ? displaySearchWord(
+          data[0]["word"],
+          data[0]["phonetics"],
+          formatMeanings(data)
+        )
+      : displayErrorMessage(
+          data.title + ". " + data.message + ". " + data.resolution
+        );
   } catch (err) {
-    const errorNode = create("div");
-    errorNode.classList.add("word-meanings");
-    errorNode.innerHTML = `<p class="h1 text-danger">${err.message}</p>`;
-
-    select(".word-meanings-wrapper").replaceChild(
-      errorNode,
-      select(".word-meanings")
-    );
-
-    // removing loading spinner
-    select(".loading-spinner").classList.add("d-none");
+    displayErrorMessage(err.message);
   }
 };
 
@@ -113,8 +107,6 @@ function displaySearchWord(word, phonetics, meanings) {
 
       // example
       if (item.example) showMetaInfo("Example", item.example, listItem);
-
-      console.log(item?.synonyms);
 
       // synonyms
       if (item.hasOwnProperty("synonyms")) {
@@ -192,6 +184,20 @@ function formatMeanings(data) {
   return reducedArr;
 }
 
+// Show Error Message
+function displayErrorMessage(msg) {
+  const errorNode = create("div");
+  errorNode.classList.add("word-meanings");
+  errorNode.innerHTML = `<p class="h1 text-danger">${message}</p>`;
+
+  select(".word-meanings-wrapper").replaceChild(
+    errorNode,
+    select(".word-meanings")
+  );
+
+  // removing loading spinner
+  select(".loading-spinner").classList.add("d-none");
+}
 // Get DOM value
 function getDOMValue(selector, method = "innerText") {
   return select(selector)[method];
