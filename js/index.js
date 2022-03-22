@@ -93,6 +93,7 @@ function displaySearchWord(word, phonetics, meanings) {
     // part of speech
     const h6 = create("h6");
     h6.innerText = meaning.toUpperCase();
+    h6.classList.add("text-primary");
 
     div.appendChild(h6);
 
@@ -119,7 +120,7 @@ function displaySearchWord(word, phonetics, meanings) {
       if (item.hasOwnProperty("synonyms")) {
         const synonyms = item.synonyms.map(
           (word) =>
-            `<button type="button" class="btn btn-link p-0" onclick='searchWord("${word}")'>${word}</button>`
+            `<button type="button" class="btn btn-link p-0 text-dark" onclick='searchWord("${word}")'>${word}</button>`
         );
         synonyms.length > 0 &&
           showMetaInfo("Synonyms", synonyms.join(" "), listItem);
@@ -129,7 +130,7 @@ function displaySearchWord(word, phonetics, meanings) {
       if (item.hasOwnProperty("antonyms")) {
         const antonyms = item.antonyms.map(
           (word) =>
-            `<button type="button" class="btn btn-link p-0" onclick='searchWord("${word}")'>${word}</button>`
+            `<button type="button" class="btn btn-link p-0 text-dark" onclick='searchWord("${word}")'>${word}</button>`
         );
         antonyms.length > 0 &&
           showMetaInfo("Antonyms", antonyms.join(" "), listItem);
